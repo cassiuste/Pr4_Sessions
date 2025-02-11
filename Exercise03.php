@@ -55,40 +55,48 @@
             <input type="submit" name="reset" value="Reset">
         </form>
         <?php
-
-            // logica de add, update y reset
-
-            // primero el add al formulario, calculateTotal, delete
-
-            // ultimo el update que es que se aprieta el edit en el formulario y se pone en el primer formulario 
-            // en el que te lo muestra y lo modifica ahi.
             
                 if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     if(isset($_POST['add']) || isset($_POST['update'])){
-                        $name = htmlspecialchars($_POST['name']);
+                        $name = strtolower(htmlspecialchars($_POST['name']));
                         $quantity = htmlspecialchars($_POST['quantity']);
                         $price = htmlspecialchars($_POST['price']);
+
                         if(isset($_POST['add'])){
                             $_SESSION['list'][$index] = array('name' => $name, 'quantity' => $quantity, 'price' => $price);
                             $message = "Item added properly.";
                         }
                         if(isset($_POST['update'])){
-                            
+                            $isItem = false;
+                            foreach($_SESSION['list'] as &$item){
+                                if($item['name'] === $name){
+                                    $item['quantity'] = $quantity;
+                                    $item['price'] = $price;
+                                    $isItem = true;
+                                    break;
+                                }
+                            }
+                            if($isItem){
+                                $message = "Item updated properly.";
+                            }
+                            else{
+                                $error = "Couldn't update the item.";
+                            }
+                            } 
+                        }
+                        if(isset($_POST['delete'])){
+                            $index = htmlspecialchars($_POST['index']);
+                            unset($_SESSION['list'][$index]);
+                            $message = "Item deleted properly.";
+                    }
+                    if(isset($_POST['total'])){
+                        foreach($_SESSION['list'] as $index => $item){
+                            $totalValue += $item['quantity'] * $item['price'];
                         }
                     }
+                }
                     var_dump($_SESSION['list']);
-                }
 
-                if(isset($_POST['delete'])){
-                    $index = htmlspecialchars($_POST['index']);
-                    unset($_SESSION['list'][$index]);
-                    $message = "Item deleted properly.";
-            }
-            if(isset($_POST['total'])){
-                foreach($_SESSION['list'] as $index => $item){
-                    $totalValue += $item['quantity'] * $item['price'];
-                }
-            }
         ?>
 
         <!-- error message -->
@@ -108,7 +116,10 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($_SESSION['list'] as $index => $item) { ?>
+                <?php 
+                if(!empty($_SESSION['list'])){
+                foreach ($_SESSION['list'] as $index => $item) { 
+                    ?>
                     <tr>
                         <td><?php echo $item['name']; ?></td>
                         <td><?php echo $item['quantity']; ?></td>
@@ -125,7 +136,9 @@
                             </form>
                         </td>
                     </tr>
-                <?php } ?>
+                <?php } 
+                }
+                ?>
                 <tr>
                     <td colspan="3" align="right"><strong>Total:</strong></td>
                     <td><?php echo "{$totalValue}" ?></td>
