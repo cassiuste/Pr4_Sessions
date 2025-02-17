@@ -1,13 +1,18 @@
 <?php
         session_start();
+        // Si se indica el boton de reset, se destruye las variables de la session, y se destruye la propia session
         if (isset($_POST["reset"])) {
             session_unset();
             session_destroy();
         }
+        // Se crea un boolean para poder imprimirlo si es verdadero
         $isAverage = false;
+        // Si no esta declarada, se crea el array en la session por default
         if (!isset($_SESSION["array"])) {
             $_SESSION["array"] = array(10,20,30);
         }
+        // Si se indica que se modifique el array se crea un nuevo array con el valor del nuevo elemento y
+        // se modifica al array de la session
         if (isset($_POST["modify"])) {
             $position = htmlspecialchars($_POST["position"]);
             $value = htmlspecialchars($_POST["value"]);

@@ -1,20 +1,25 @@
 <?php
     session_start();
 
+    // Si se indica el boton de reset, se destruye las variables de la session, y se destruye 
     if(isset($_POST["reset"])){
         session_unset();
         session_destroy();
     }
+    //Cuando se indique 'add', que se almacene el nombre en el '$_SESSION["name"]'
     if(isset($_POST["add"])){
         $_SESSION["name"] = htmlspecialchars($_POST["name"]);;
         $product = htmlspecialchars($_POST["product"]);
         $quantity = htmlspecialchars($_POST["quantity"]);
+        // Si no esta declarado, que indique que la cantidad de ese producto sea 0.
         if (!isset($_SESSION[$product])) {
             $_SESSION[$product] = 0;
         }
         $_SESSION[$product] += $quantity;
         
     }
+    // En el remove, solo se podrá remover las cantidades de ese producto si el numero de la
+    // cantidad no es menor a 0
     if(isset($_POST["remove"])){
         $_SESSION["name"] = htmlspecialchars($_POST["name"]);;
         $product = htmlspecialchars($_POST["product"]);

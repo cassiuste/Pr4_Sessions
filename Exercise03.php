@@ -6,9 +6,13 @@
         $error = "";
         $message = "";
 
+        // Si no este indicado el array de los productos de la session que el indice sea 0
+        // para que sea el primer elemento
         isset($_SESSION['list']) ? $index = count(($_SESSION['list'])) : $index = 0;
         $totalValue = 0;
 
+        // En el caso de que el usuario indique el boton 'edit' del formulario que les muestren
+        // los datos del producto
         if (isset($_POST['edit'])) {
             $name = htmlspecialchars($_POST['name']);
             $quantity = htmlspecialchars($_POST['quantity']);
@@ -62,10 +66,13 @@
                         $quantity = htmlspecialchars($_POST['quantity']);
                         $price = htmlspecialchars($_POST['price']);
 
+                        // Se crea el array de session con la infomacion del producto
                         if(isset($_POST['add'])){
                             $_SESSION['list'][$index] = array('name' => $name, 'quantity' => $quantity, 'price' => $price);
                             $message = "Item added properly.";
                         }
+                        // Se itera sobre el array de las session para modificar el producto en caso de encontrarlo a los
+                        // nuevos valores indicados por el usuario
                         if(isset($_POST['update'])){
                             $isItem = false;
                             foreach($_SESSION['list'] as &$item){
@@ -76,26 +83,22 @@
                                     break;
                                 }
                             }
-                            if($isItem){
-                                $message = "Item updated properly.";
-                            }
-                            else{
-                                $error = "Couldn't update the item.";
-                            }
+                            // Que indique el mensaje si lo pudo actualizar, sino que muestre un error
+                            $isItem ? $message = "Item updated properly." : $error = "Couldn't update the item.";
                             } 
                         }
-                        if(isset($_POST['delete'])){
+                        // Cuando se indique el delete del formulario, tendria que cojer el index del formulario y borrar ese elemento del array del array de session
+                        else if(isset($_POST['delete'])){
                             $index = htmlspecialchars($_POST['index']);
                             unset($_SESSION['list'][$index]);
                             $message = "Item deleted properly.";
                     }
-                    if(isset($_POST['total'])){
+                    else if(isset($_POST['total'])){
                         foreach($_SESSION['list'] as $index => $item){
                             $totalValue += $item['quantity'] * $item['price'];
                         }
                     }
                 }
-                    var_dump($_SESSION['list']);
 
         ?>
 
