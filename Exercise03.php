@@ -68,8 +68,19 @@
 
                         // Se crea el array de session con la infomacion del producto
                         if(isset($_POST['add'])){
-                            $_SESSION['list'][$index] = array('name' => $name, 'quantity' => $quantity, 'price' => $price);
-                            $message = "Item added properly.";
+                            $repeatedItem = false;
+                            // Se itera sobre el array de la lista en session para verificar si existe el producto
+                            // si no existe lo crea, sino aparecerá un mensaje de error
+                            foreach($_SESSION['list'] as $item){
+                                if($item['name'] === $name){
+                                    $repeatedItem = true;
+                                    $error = "Cannot add a repeated item.";
+                                }
+                            }
+                            if(!$repeatedItem){
+                                $_SESSION['list'][$index] = array('name' => $name, 'quantity' => $quantity, 'price' => $price);
+                                $message = "Item added properly.";
+                            }
                         }
                         // Se itera sobre el array de las session para modificar el producto en caso de encontrarlo a los
                         // nuevos valores indicados por el usuario
